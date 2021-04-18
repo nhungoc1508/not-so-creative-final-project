@@ -1,7 +1,9 @@
 import processing.serial.*;
 Serial myPort;
-int xPos=0;
-int yPos;
+float xPos=0;
+float yPos;
+float smoothedNum = 0;
+float prevX=0;
 
 void setup() {
   //size(960, 720);
@@ -19,7 +21,11 @@ void draw() {
   background(255);
   fill(100, 200, 200);
   noStroke();
-  ellipse(xPos, yPos, 50, 50);
+  if (abs(xPos-smoothedNum) < width*.3) {
+    smoothedNum += (xPos-smoothedNum)*.2;
+  }
+  ellipse(smoothedNum, yPos, 50, 50);
+  prevX = smoothedNum;
 }
 
 void serialEvent(Serial myPort) {
@@ -29,7 +35,7 @@ void serialEvent(Serial myPort) {
     println(s);
     int value = int(s);
     println(value);
-    xPos=(int)map(value, 0, 50, 0, width);
+    xPos=(float)map(value, 0, 50, 0, width);
   }
   myPort.write("\n");
 }
