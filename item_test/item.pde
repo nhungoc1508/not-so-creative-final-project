@@ -19,6 +19,10 @@ class Item {
   
   void update() {
     posY += velocityY;
+    
+    if (frameCount % 12 == 0){
+        frame = (frame + 1) % num_frames;
+    }
   }
   
   void display() {
