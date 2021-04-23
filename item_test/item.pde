@@ -9,6 +9,7 @@ class Item {
     posY = 0; // to be changed based on where the item starts falling from
     radius = r;
     velocityY = random(2,6); // might be changed
+    image_name = "pngs/" + image_name;
     sprite_image = loadImage(image_name);
     imgwidth = img_w;
     imgheight = img_h;
