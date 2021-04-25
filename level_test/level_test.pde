@@ -1,4 +1,5 @@
 Level level;
+String screen = "game";
 
 void setup() {
   fullScreen();
@@ -7,5 +8,16 @@ void setup() {
 
 void draw() {
   background(255);
-  level.testLevel();
+  background(255);
+  switch(screen) {
+    case "game":
+      level.testLevel();
+      break;
+    case "win":
+      level.displayWin();
+      break;
+    case "lose":
+      level.displayLose();
+      break;
+  }
 }
