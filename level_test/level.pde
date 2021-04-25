@@ -74,12 +74,12 @@ class Level {
 
   void displayWin() {
     displayMetrics();
-    text("You won", width/2, height/2);
+    text("YOU WON", width/2, height/2);
   }
 
   void displayLose() {
     displayMetrics();
-    text("You lost", width/2, height/2);
+    text("YOU LOST", width/2, height/2);
   }
 
   void addItems() {
@@ -119,7 +119,7 @@ class Level {
     textSize(50);
     textAlign(CENTER, CENTER);
     fill(0);
-    String displayText = "Academic: " + str(academic) + "\n Health: " + str(health);
+    String displayText = "LEVEL: "+str(levelNum)+"\nACADEMIC: "+str(academic)+"\nHEALTH: "+str(health);
     text(displayText, x, y);
   }
 
