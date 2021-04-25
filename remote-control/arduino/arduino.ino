@@ -1,7 +1,10 @@
 const int trigPin = 11;
 const int echoPin = 12;
+const int buttonPin = 2;
+const int potenPin = A0;
 
 float distance;
+int buttonState, potenValue;
 
 void setup() {
   // put your setup code here, to run once:
@@ -9,6 +12,8 @@ void setup() {
   Serial.println("0");
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
+  pinMode(buttonPin, INPUT);
+  pinMode(potenPin, INPUT);
 }
 
 void loop() {
@@ -18,7 +23,14 @@ void loop() {
   while (Serial.available()) {
     if (Serial.read() == '\n') {
       distance = getDistance();
+      buttonState = digitalRead(buttonPin);
+      potenValue = analogRead(potenPin);
       delay(1);
+      
+      Serial.print(buttonState);
+      Serial.print(',');
+      Serial.print(potenValue);
+      Serial.print(',');
       Serial.println(distance);
     }
   }

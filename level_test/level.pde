@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 class Level {
   Player player = new Player();
+  String[] academic_years = {"freshman", "sophomore", "junior", "senior"};
   String[] item_names = {"airplane5", "anxiety", "athletics", "campus_dirhams", "capstone", "cheating", 
     "deadline", "fatigue", "gpa", "gym_slot", "handw", "internship", 
     "jterm2", "missed", "nighter", "procrastination", "stipend2", "swipe", "symptoms"};
@@ -72,15 +73,16 @@ class Level {
     //}
   }
 
-  void displayWin() {
-    displayMetrics();
-    text("YOU WON", width/2, height/2);
-  }
+  //void displayWin() {
+  //  //displayMetrics();
+  //  String year = academic_years[levelNum].toUpperCase();
+  //  text("YOU MADE IT THROUGH "+year+" YEAR\nWITH GREAT HEALTH AND FLYING COLORS!", width/2, height/2);
+  //}
 
-  void displayLose() {
-    displayMetrics();
-    text("YOU LOST", width/2, height/2);
-  }
+  //void displayLose() {
+  //  //displayMetrics();
+  //  text("YOU LOST", width/2, height/2);
+  //}
 
   void addItems() {
     int random_number = (int)random(0, 19);
@@ -119,7 +121,8 @@ class Level {
     textSize(50);
     textAlign(CENTER, CENTER);
     fill(0);
-    String displayText = "LEVEL: "+str(levelNum)+"\nACADEMIC: "+str(academic)+"\nHEALTH: "+str(health);
+    String year = academic_years[levelNum].toUpperCase();
+    String displayText = "YEAR: "+year+"\nACADEMIC: "+str(academic)+"\nHEALTH: "+str(health);
     text(displayText, x, y);
   }
 

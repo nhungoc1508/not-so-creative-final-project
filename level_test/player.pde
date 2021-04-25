@@ -1,3 +1,10 @@
+import processing.serial.*;
+Serial myPort;
+float xPos=0;
+float yPos;
+float smoothedNum = 0;
+float prevX=0;
+
 class Player {
   PVector position, dimension;
   float yOffset = height/10;
@@ -8,7 +15,7 @@ class Player {
   }
   
   void display() {
-    update();
+    //update();
     // Temporary: a circle of radius 15
     rectMode(CENTER);
     rect(position.x, position.y, dimension.x, dimension.y);
@@ -16,6 +23,7 @@ class Player {
   
   void update() {
     // Temporary: change position using mouse
-    position.x = min(mouseX, width*.75);
+    //position.x = min(mouseX, width*.75);
+    position.x = smoothedNum;
   }
 }
