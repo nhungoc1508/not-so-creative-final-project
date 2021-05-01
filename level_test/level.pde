@@ -73,17 +73,6 @@ class Level {
     //}
   }
 
-  //void displayWin() {
-  //  //displayMetrics();
-  //  String year = academic_years[levelNum].toUpperCase();
-  //  text("YOU MADE IT THROUGH "+year+" YEAR\nWITH GREAT HEALTH AND FLYING COLORS!", width/2, height/2);
-  //}
-
-  //void displayLose() {
-  //  //displayMetrics();
-  //  text("YOU LOST", width/2, height/2);
-  //}
-
   void addItems() {
     int random_number = (int)random(0, 19);
     if (frameCount % 20 == 0) {

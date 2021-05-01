@@ -2,7 +2,7 @@ Level level;
 String screen = "welcome";
 PFont font;
 int level_count = 0;
-int buttonState, potenValue;
+int buttonState, prevButtonState, potenValue;
 String[] academic_years = {"freshman", "sophomore", "junior", "senior"};
 
 void setup() {
@@ -52,12 +52,18 @@ void draw() {
     level.testLevel();
     break;
   case "win":
-    displayWin();
+    if (level.levelNum < 3) {
+      displayWin();
+    } else {
+      displayGraduate();
+    }
     break;
   case "lose":
     displayLose();
     break;
   }
+
+  prevButtonState = buttonState;
 }
 
 void displayWelcome() {
@@ -68,7 +74,7 @@ void displayWelcome() {
   float choice = (float)map(potenValue, 0, 1023, 0, 100);
   if (choice < 50) {
     displayText = "WELCOME\n>> INSTRUCTION <<\nSTART";
-    if (buttonState == 1) {
+    if (buttonState == 1 && prevButtonState == 0) {
       screen = "instruction";
     }
   } else {
@@ -84,59 +90,48 @@ void displayInstruction() {
   textSize(50);
   textAlign(CENTER, CENTER);
   fill(0);
-  String displayText = "INSTRUCTIONS\n press left to go back";
+  String displayText = "INSTRUCTIONS\n press button to go back";
   text(displayText, width/2, height/2);
+  if (buttonState == 1 && prevButtonState == 0) {
+    screen = "welcome";
+  }
 }
 
 void displayWin() {
   //displayMetrics();
   String year = academic_years[level.levelNum].toUpperCase();
-  text("YOU MADE IT THROUGH "+year+" YEAR\nWITH GREAT HEALTH AND FLYING COLORS!\npress right for next year", width/2, height/2);
+  String next_year = academic_years[level.levelNum+1];
+  text("YOU MADE IT THROUGH "+year+" YEAR\nWITH GREAT HEALTH AND FLYING COLORS!\npress button to proceed to "+next_year+" year", width/2, height/2);
+  if (buttonState == 1 && prevButtonState == 0) {
+    level_count += 1;
+    level = new Level(level_count);
+    screen = "game";
+  }
 }
 
 void displayLose() {
-  //displayMetrics();
   String year = academic_years[level.levelNum].toUpperCase();
-  text(year+" YEAR HAS BEEN ROUGH!\nRESET LEVEL -- | -- RESET GAME", width/2, height/2);
+  String displayText;
+  float choice = (float)map(potenValue, 0, 1023, 0, 100);
+  if (choice < 50) {
+    displayText = year+" YEAR HAS BEEN ROUGH!\n>> RESET LEVEL <<\nRESET GAME";
+    if (buttonState == 1 && prevButtonState == 0) {
+      level = new Level(level_count);
+      screen = "game";
+    }
+  } else {
+    displayText = year+" YEAR HAS BEEN ROUGH!\nRESET LEVEL\n>> RESET GAME <<";
+    if (buttonState == 1) {
+      level = new Level(0);
+      screen = "game";
+    }
+  }
+  text(displayText, width/2, height/2);
 }
 
 void displayGraduate() {
   String displayText = "YOU'VE GRADUATED";
   text(displayText, width/2, height/2);
-}
-
-void keyPressed() {
-  switch(screen) {
-  case "welcome":
-    if (keyPressed && keyCode == LEFT) {
-      screen = "instruction";
-    } else if (keyPressed && keyCode == RIGHT) {
-      screen = "game";
-    }
-    break;
-  case "instruction":
-    if (keyPressed && keyCode == LEFT) {
-      screen = "welcome";
-    }
-    break;
-  case "win":
-    if (keyPressed && keyCode == RIGHT) {
-      level_count += 1;
-      level = new Level(level_count);
-      screen = "game";
-    }
-    break;
-  case "lose":
-    if (keyPressed) {
-      if (keyCode == LEFT) {
-        level = new Level(level_count);
-      } else if (keyCode == RIGHT) {
-        level = new Level(0);
-      }
-      screen = "game";
-    }
-    break;
-  }
 }
 
 void serialEvent(Serial myPort) {
@@ -149,6 +144,17 @@ void serialEvent(Serial myPort) {
       potenValue = (int)(values[1]);
       xPos=(float)map(values[2], 0, 50, 0, width);
     }
+  }
+  if (screen == "game") {
+    if (level.academic >= 50 && level.health >= 50) {
+      myPort.write("2");
+    } else if (level.academic <= 25 || level.health <= 25) {
+      myPort.write("0");
+    } else {
+      myPort.write("1");
+    }
+  } else {
+    myPort.write("3");
   }
   myPort.write("\n");
 }
