@@ -15,7 +15,7 @@ class Player {
   }
   
   void display() {
-    //update();
+    update();
     // Temporary: a circle of radius 15
     rectMode(CENTER);
     rect(position.x, position.y, dimension.x, dimension.y);
@@ -23,7 +23,7 @@ class Player {
   
   void update() {
     // Temporary: change position using mouse
-    //position.x = min(mouseX, width*.75);
-    position.x = smoothedNum;
+    position.x = min(mouseX, width*.75);
+    //position.x = min(smoothedNum, width*0.75);
   }
 }

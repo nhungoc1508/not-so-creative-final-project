@@ -1,54 +1,43 @@
 import java.util.ArrayList;
+import java.util.Map;
 
 class Level {
   Player player = new Player();
   String[] academic_years = {"freshman", "sophomore", "junior", "senior"};
-  String[] item_names = {"airplane5", "anxiety", "athletics", "campus_dirhams", "capstone", "cheating", 
-    "deadline", "fatigue", "gpa", "gym_slot", "handw", "internship", 
-    "jterm2", "missed", "nighter", "procrastination", "stipend2", "swipe", "symptoms"};
-  Integer[] frames = {3, 3, 6, 2, 1, 1, 2, 2, 2, 2, 1, 3, 1, 2, 2, 1, 2, 2, 2};
+  Table table0, table1;
+  int numRow0, numRow1;
+  ArrayList<String> item_names = new ArrayList<String>();
+  HashMap<String, Integer> frames = new HashMap<String, Integer>();
   StringList posAcademic = new StringList();
   StringList negAcademic = new StringList();
   StringList posHealth = new StringList();
   StringList negHealth = new StringList();
-  ArrayList<Item> items;
+  ArrayList<Item> items = new ArrayList<Item>();
   int levelNum;
   int academic = 50;
   int health = 50;
   float xOffset = width*.75;
   int default_value = 20;
   int random_number;
+  PImage bg_freshman, bg_sophomore, bg_junior, bg_senior;
 
   Level(int level_num) {
     levelNum = level_num;
+    loadData();
+    //items.add(new Item(30, "jterm2", 100, 100, 1));
 
-    posAcademic.append("airplane5");
-    posAcademic.append("capstone");
-    posAcademic.append("gpa");
-    posAcademic.append("internship");
-    posAcademic.append( "jterm2");
-
-    negAcademic.append("cheating");
-    negAcademic.append("deadline");
-    negAcademic.append("procrastination");
-
-    posHealth.append("athletics");
-    posHealth.append("campus_dirhams");
-    posHealth.append("gym_slot");
-    posHealth.append("handw");
-    posHealth.append("stipend2");
-    posHealth.append("swipe");
-
-    negHealth.append("anxiety");
-    negHealth.append("fatigue");
-    negHealth.append("nighter");
-    negHealth.append("symptoms");
-
-    items = new ArrayList();
-    items.add(new Item(30, "jterm2", 100, 100, 1));
+    bg_freshman = loadImage("../data/images/freshman.png");
+    bg_freshman.resize(width, 0);
+    bg_sophomore = loadImage("../data/images/nyc.png");
+    bg_sophomore.resize(0, height);
+    bg_junior = loadImage("../data/images/nyc2.png");
+    bg_junior.resize(0, height);
+    bg_senior = loadImage("../data/images/senior2.png");
+    bg_senior.resize(0, height);
   }
 
   void testLevel() {
+    displayBackground();
     player.display();
     addItems();
     displayItems();
@@ -73,10 +62,42 @@ class Level {
     //}
   }
 
+  void displayBackground() {
+    if (levelNum == 0) {
+      image(bg_freshman, 0, 0);
+      pushStyle();
+      rectMode(CORNER);
+      fill(255, 255, 255, 100);
+      rect(0, 0, width, height);
+      popStyle();
+    } else if (levelNum == 1) {
+      image(bg_sophomore, 0, 0);
+      pushStyle();
+      rectMode(CORNER);
+      fill(255, 255, 255, 80);
+      rect(0, 0, width, height);
+      popStyle();
+    } else if (levelNum == 2) {
+      image(bg_junior, 0, 0);
+      pushStyle();
+      rectMode(CORNER);
+      fill(255, 255, 255, 100);
+      rect(0, 0, width, height);
+      popStyle();
+    } else if (levelNum == 3) {
+      image(bg_senior, 0, 0);
+      pushStyle();
+      rectMode(CORNER);
+      fill(255, 255, 255, 75);
+      rect(0, 0, width, height);
+      popStyle();
+    }
+  }
+
   void addItems() {
-    int random_number = (int)random(0, 19);
+    int random_number = (int)random(0, item_names.size());
     if (frameCount % 20 == 0) {
-      items.add(new Item(30, item_names[random_number], 100, 100, frames[random_number]));
+      items.add(new Item(30, item_names.get(random_number), 100, 100, frames.get(item_names.get(random_number))));
     }
   }
 
@@ -89,6 +110,7 @@ class Level {
   void checkCollision() {
     for (Item item : items) {
       if (colliding(item)) {
+        //kill_sound.play();
         item.posY = height+100;
         String img_name = item.img_name;
         if (posAcademic.hasValue(img_name)) {
@@ -151,5 +173,49 @@ class Level {
 
   void decreaseHealth(int amount) {
     health = max(0, health-amount);
+  }
+
+  void loadData() {
+    table0 = loadTable("../data/items-list/items-list"+str(levelNum)+".csv", "csv");
+    int numRow0 = table0.getRowCount();
+    for (int i=0; i<numRow0; i++) {
+      TableRow row = table0.getRow(i);
+      String item_name = row.getString(0);
+      int item_frame = row.getInt(1);
+      item_names.add(item_name);
+      frames.put(item_name, item_frame);
+    }
+
+    table1 = loadTable("../data/items-list/pos_academic.csv", "csv");
+    numRow1 = table1.getRowCount();
+    for (int i=0; i<numRow1; i++) {
+      TableRow row = table1.getRow(i);
+      String item_name = row.getString(0);
+      posAcademic.append(item_name);
+    }
+
+    table1 = loadTable("../data/items-list/neg_academic.csv", "csv");
+    numRow1 = table1.getRowCount();
+    for (int i=0; i<numRow1; i++) {
+      TableRow row = table1.getRow(i);
+      String item_name = row.getString(0);
+      negAcademic.append(item_name);
+    }
+
+    table1 = loadTable("../data/items-list/pos_health.csv", "csv");
+    numRow1 = table1.getRowCount();
+    for (int i=0; i<numRow1; i++) {
+      TableRow row = table1.getRow(i);
+      String item_name = row.getString(0);
+      posHealth.append(item_name);
+    }
+
+    table1 = loadTable("../data/items-list/neg_health.csv", "csv");
+    numRow1 = table1.getRowCount();
+    for (int i=0; i<numRow1; i++) {
+      TableRow row = table1.getRow(i);
+      String item_name = row.getString(0);
+      negHealth.append(item_name);
+    }
   }
 }
