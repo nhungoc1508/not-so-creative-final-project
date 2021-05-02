@@ -161,7 +161,7 @@ class Level {
   void checkCollision() {
     for (Item item : items) {
       if (colliding(item)) {
-        //kill_sound.play();
+        kill_sound.play();
         item.posY = height+100;
         String img_name = item.img_name;
         if (img_name.equals("airplane5")) {

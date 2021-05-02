@@ -6,7 +6,7 @@ class Item {
   int value;
   
   Item(float r, String image_name, float img_w, float img_h, int number_frames, int item_value) {
-    posX = random(0, width*.75); // to be changed based on whether or not the full sprite appears
+    posX = random(50, width*.75); // to be changed based on whether or not the full sprite appears
     posY = 0; // to be changed based on where the item starts falling from
     radius = r;
     velocityY = random(2,6); // might be changed

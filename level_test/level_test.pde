@@ -29,14 +29,14 @@ void setup() {
   font = createFont("../data/fonts/PixelGameFont.ttf", 32);
   textFont(font);
 
-  //path = sketchPath("kill.mp3");
-  //kill_sound = new SoundFile(this, path);
+  path = sketchPath("kill.mp3");
+  kill_sound = new SoundFile(this, path);
 
-  //path2 = sketchPath("background.mp3");
-  //background_sound = new SoundFile(this, path2);
-  //background_sound.loop();
+  path2 = sketchPath("background.mp3");
+  background_sound = new SoundFile(this, path2);
+  background_sound.loop();
 
-  level = new Level(1);
+  level = new Level(0);
   poten = loadImage("../data/welcome/poten.png");
   button = loadImage("../data/welcome/button.png");
   items_guide = loadImage("../data/welcome/items_guide.png");
@@ -259,6 +259,7 @@ void displayLose() {
     resetGame = ">> RESET GAME <<";
     if (buttonState == 1) {
       level = new Level(0);
+      level_count = 0;
       screen = "game";
     }
   }
@@ -290,6 +291,7 @@ void displayGraduate() {
   text("TO RESET GAME", width/2, height-50);
   if (buttonState == 1) {
     level = new Level(0);
+    level_count = 0;
     screen = "welcome";
   }
   popStyle();
