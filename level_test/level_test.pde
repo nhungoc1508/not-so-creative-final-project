@@ -3,13 +3,14 @@ import processing.sound.*;
 Level level;
 String screen = "welcome";
 PFont font;
-int level_count = 1;
+int level_count = 0;
 int buttonState, prevButtonState, potenValue;
 String[] academic_years = {"freshman", "sophomore", "junior", "senior"};
 color nyu = color(91, 15, 141);
 
 int frame = 0;
-PImage poten, button;
+int frame2 = 0;
+PImage poten, button, items_guide;
 
 String audioName = "kill.mp3";
 String path, path2;
@@ -35,9 +36,10 @@ void setup() {
   //background_sound = new SoundFile(this, path2);
   //background_sound.loop();
 
-  level = new Level(1);
+  level = new Level(3);
   poten = loadImage("../data/welcome/poten.png");
   button = loadImage("../data/welcome/button.png");
+  items_guide = loadImage("../data/welcome/items_guide.png");
   bg_welcome = loadImage("../data/images/welcome.png");
   bg_welcome.resize(width, 0);
   bg_break = loadImage("../data/images/break.png");
@@ -55,8 +57,23 @@ void draw() {
   if (abs(xPos-smoothedNum) < width*.3) {
     smoothedNum += (xPos-smoothedNum)*.2;
   }
+  //prevX = smoothedNum;
+  level.player.position.x = min(smoothedNum, width*.75);
+  if (level.player.position.x != prevX) {
+    if (frameCount % 5 == 0) {
+      level.player.frame = (level.player.frame + 1) % (level.player.num_frames - 1);
+    }
+  } else if (level.player.position.x == prevX) {
+    level.player.frame = level.player.num_frames - 1;
+  }
+
+  if (level.player.position.x > prevX) {
+    level.player.directionX = "right";
+  } else if (level.player.position.x < prevX) {
+    level.player.directionX = "left";
+  }
   prevX = smoothedNum;
-  //level.player.position.x = smoothedNum;
+  //prevX = level.player.position.x;
 
   switch(screen) {
   case "welcome":
@@ -152,6 +169,18 @@ void displayInstruction() {
   if (buttonState == 1 && prevButtonState == 0) {
     screen = "welcome";
   }
+
+  int w = items_guide.width;
+  int h = round(items_guide.height/4);
+  PImage[] guide = new PImage[4];
+  for (int y=0; y < 4; y++) {
+    guide[y] = items_guide.get(0, y*h, w, h);
+  }
+  if (frameCount % 120 == 0) {
+    frame2 = (frame2+1) % 4;
+  }
+  image(guide[frame2], width/2, height*0.25);
+
   popStyle();
 }
 

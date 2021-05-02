@@ -8,6 +8,7 @@ class Level {
   int numRow0, numRow1;
   ArrayList<String> item_names = new ArrayList<String>();
   HashMap<String, Integer> frames = new HashMap<String, Integer>();
+  HashMap<String, Integer> values = new HashMap<String, Integer>();
   StringList posAcademic = new StringList();
   StringList negAcademic = new StringList();
   StringList posHealth = new StringList();
@@ -20,6 +21,7 @@ class Level {
   int default_value = 20;
   int random_number;
   PImage bg_freshman, bg_sophomore, bg_junior, bg_senior;
+  color nyu = color(91, 15, 141);
 
   Level(int level_num) {
     levelNum = level_num;
@@ -28,9 +30,9 @@ class Level {
 
     bg_freshman = loadImage("../data/images/freshman.png");
     bg_freshman.resize(width, 0);
-    bg_sophomore = loadImage("../data/images/nyc.png");
+    bg_sophomore = loadImage("../data/images/sophomore.png");
     bg_sophomore.resize(0, height);
-    bg_junior = loadImage("../data/images/nyc2.png");
+    bg_junior = loadImage("../data/images/junior.png");
     bg_junior.resize(0, height);
     bg_senior = loadImage("../data/images/senior2.png");
     bg_senior.resize(0, height);
@@ -97,7 +99,7 @@ class Level {
   void addItems() {
     int random_number = (int)random(0, item_names.size());
     if (frameCount % 20 == 0) {
-      items.add(new Item(30, item_names.get(random_number), 100, 100, frames.get(item_names.get(random_number))));
+      items.add(new Item(30, item_names.get(random_number), 100, 100, frames.get(item_names.get(random_number)), values.get(item_names.get(random_number))));
     }
   }
 
@@ -114,27 +116,35 @@ class Level {
         item.posY = height+100;
         String img_name = item.img_name;
         if (posAcademic.hasValue(img_name)) {
-          increaseAcademic(default_value);
+          increaseAcademic(item.value);
         } else if (negAcademic.hasValue(img_name)) {
-          decreaseAcademic(default_value);
+          decreaseAcademic(item.value);
         } else if (posHealth.hasValue(img_name)) {
-          increaseHealth(default_value);
+          increaseHealth(item.value);
         } else if (negHealth.hasValue(img_name)) {
-          decreaseHealth(default_value);
+          decreaseHealth(item.value);
         }
       }
     }
   }
 
   void displayMetrics() {
-    float x = width*.8;
+    pushStyle();
+    float x = width*.9;
     float y = height/2;
-    textSize(50);
+    rectMode(CENTER);
+    fill(0, 0, 0, 100);
+    noStroke();
+    rect(width*.915, height/2, width*.25, height);
+    textSize(40);
     textAlign(CENTER, CENTER);
-    fill(0);
-    String year = academic_years[levelNum].toUpperCase();
-    String displayText = "YEAR: "+year+"\nACADEMIC: "+str(academic)+"\nHEALTH: "+str(health);
+    fill(255);
+    String year = academic_years[levelNum].toUpperCase() + "\nYEAR";
+    //text(year, x, height*0.15);
+    String metrics = "ACADEMIC\n"+str(academic)+"\n\nHEALTH\n"+str(health);
+    String displayText = year + "\n\n" + metrics;
     text(displayText, x, y);
+    popStyle();
   }
 
   boolean colliding(Item item) {
@@ -182,8 +192,10 @@ class Level {
       TableRow row = table0.getRow(i);
       String item_name = row.getString(0);
       int item_frame = row.getInt(1);
+      int item_value = row.getInt(2);
       item_names.add(item_name);
       frames.put(item_name, item_frame);
+      values.put(item_name, item_value);
     }
 
     table1 = loadTable("../data/items-list/pos_academic.csv", "csv");

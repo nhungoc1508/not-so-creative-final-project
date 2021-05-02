@@ -3,8 +3,9 @@ class Item {
   PImage sprite_image;
   int num_frames, frame;
   String img_name;
+  int value;
   
-  Item(float r, String image_name, float img_w, float img_h, int number_frames) {
+  Item(float r, String image_name, float img_w, float img_h, int number_frames, int item_value) {
     posX = random(0, width*.75); // to be changed based on whether or not the full sprite appears
     posY = 0; // to be changed based on where the item starts falling from
     radius = r;
@@ -15,6 +16,7 @@ class Item {
     imgwidth = img_w;
     imgheight = img_h;
     num_frames= number_frames;
+    value = item_value;
     frame = 0;
   }
   
