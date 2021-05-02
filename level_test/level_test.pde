@@ -10,7 +10,7 @@ color nyu = color(91, 15, 141);
 
 int frame = 0;
 int frame2 = 0;
-PImage poten, button, items_guide;
+PImage poten, button, items_guide, remote_control;
 
 String audioName = "kill.mp3";
 String path, path2;
@@ -36,10 +36,11 @@ void setup() {
   //background_sound = new SoundFile(this, path2);
   //background_sound.loop();
 
-  level = new Level(3);
+  level = new Level(1);
   poten = loadImage("../data/welcome/poten.png");
   button = loadImage("../data/welcome/button.png");
   items_guide = loadImage("../data/welcome/items_guide.png");
+  remote_control = loadImage("../data/welcome/remote_control.png");
   bg_welcome = loadImage("../data/images/welcome.png");
   bg_welcome.resize(width, 0);
   bg_break = loadImage("../data/images/break.png");
@@ -99,6 +100,15 @@ void draw() {
   }
 
   prevButtonState = buttonState;
+
+  //
+  //for (Map.Entry me : level.rare_items_count.entrySet()) {
+  //  print(me.getKey() + " count is ");
+  //  println(me.getValue());
+  //  print(me.getKey() + " catch is ");
+  //  println(level.rare_items_catch.get(me.getKey()));
+  //}
+  //
 }
 
 void displayWelcome() {
@@ -180,6 +190,7 @@ void displayInstruction() {
     frame2 = (frame2+1) % 4;
   }
   image(guide[frame2], width/2, height*0.25);
+  image(remote_control, width/2, height*0.75);
 
   popStyle();
 }
@@ -263,8 +274,24 @@ void displayGraduate() {
   fill(255, 255, 255, 100);
   rect(0, 0, width, height);
   String displayText = "YOU'VE GRADUATED";
+  textAlign(CENTER, CENTER);
+  textSize(50);
   fill(0);
   text(displayText, width/2, height/2);
+
+  if (frameCount % 20 == 0) {
+    frame = (frame + 1) % 2;
+  }
+  imageMode(CENTER);
+  image(button, width/2, height-150, 100, 100, frame*100, 0, (frame+1)*100, 100);
+  fill(0);
+  textAlign(CENTER, CENTER);
+  textSize(30);
+  text("TO RESET GAME", width/2, height-50);
+  if (buttonState == 1) {
+    level = new Level(0);
+    screen = "welcome";
+  }
   popStyle();
 }
 

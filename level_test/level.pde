@@ -13,6 +13,13 @@ class Level {
   StringList negAcademic = new StringList();
   StringList posHealth = new StringList();
   StringList negHealth = new StringList();
+
+  StringList positives = new StringList();
+  StringList negatives = new StringList();
+
+  HashMap<String, Integer> rare_items_count = new HashMap<String, Integer>();
+  HashMap<String, Integer> rare_items_catch = new HashMap<String, Integer>();
+
   ArrayList<Item> items = new ArrayList<Item>();
   int levelNum;
   int academic = 50;
@@ -20,7 +27,8 @@ class Level {
   float xOffset = width*.75;
   int default_value = 20;
   int random_number;
-  PImage bg_freshman, bg_sophomore, bg_junior, bg_senior;
+  PImage bg_freshman, bg_sophomore, bg_junior, bg_senior, bg_away1, bg_away2;
+  boolean away = false;
   color nyu = color(91, 15, 141);
 
   Level(int level_num) {
@@ -36,6 +44,10 @@ class Level {
     bg_junior.resize(0, height);
     bg_senior = loadImage("../data/images/senior2.png");
     bg_senior.resize(0, height);
+    bg_away1 = loadImage("../data/images/nyc.png");
+    bg_away1.resize(0, height);
+    bg_away2 = loadImage("../data/images/nyc2.png");
+    bg_away2.resize(0, height);
   }
 
   void testLevel() {
@@ -73,14 +85,22 @@ class Level {
       rect(0, 0, width, height);
       popStyle();
     } else if (levelNum == 1) {
-      image(bg_sophomore, 0, 0);
+      if (!away) {
+        image(bg_sophomore, 0, 0);
+      } else {
+        image(bg_away1, 0, 0);
+      }
       pushStyle();
       rectMode(CORNER);
       fill(255, 255, 255, 80);
       rect(0, 0, width, height);
       popStyle();
     } else if (levelNum == 2) {
-      image(bg_junior, 0, 0);
+      if (!away) {
+        image(bg_junior, 0, 0);
+      } else {
+        image(bg_away2, 0, 0);
+      }
       pushStyle();
       rectMode(CORNER);
       fill(255, 255, 255, 100);
@@ -97,9 +117,38 @@ class Level {
   }
 
   void addItems() {
-    int random_number = (int)random(0, item_names.size());
-    if (frameCount % 20 == 0) {
-      items.add(new Item(30, item_names.get(random_number), 100, 100, frames.get(item_names.get(random_number)), values.get(item_names.get(random_number))));
+    //int random_number = (int)random(0, item_names.size());
+    //if (frameCount % 20 == 0) {
+    //  items.add(new Item(30, item_names.get(random_number), 100, 100, frames.get(item_names.get(random_number)), values.get(item_names.get(random_number))));
+    //}
+    //int rand_pos = (int)random(0, positives.size());
+    if (frameCount % 60 == 0) {
+      boolean item_added = false;
+      while (!item_added) {
+        int rand_pos = (int)random(0, positives.size());
+        String item_pos = positives.get(rand_pos);
+        if (!rare_items_count.containsKey(item_pos)) {
+          items.add(new Item(30, item_pos, 100, 100, frames.get(item_pos), values.get(item_pos)));
+          item_added = true;
+        } else {
+          if (rare_items_count.get(item_pos) == 3 || rare_items_catch.get(item_pos) == 1) {
+            continue;
+          } else {
+            int prev_count = rare_items_count.get(item_pos);
+            rare_items_count.put(item_pos, prev_count+1);
+            items.add(new Item(30, item_pos, 100, 100, frames.get(item_pos), values.get(item_pos)));
+            item_added = true;
+          }
+        }
+      }
+      //int rand_pos = (int)random(0, positives.size());
+      //String item_pos = positives.get(rand_pos);
+      //items.add(new Item(30, item_pos, 100, 100, frames.get(item_pos), values.get(item_pos)));
+    }
+    if (frameCount % 60 == 0) {
+      int rand_neg = (int)random(0, negatives.size());
+      String item_neg = negatives.get(rand_neg);
+      items.add(new Item(30, item_neg, 100, 100, frames.get(item_neg), values.get(item_neg)));
     }
   }
 
@@ -115,6 +164,9 @@ class Level {
         //kill_sound.play();
         item.posY = height+100;
         String img_name = item.img_name;
+        if (img_name.equals("airplane5")) {
+          away = true;
+        }
         if (posAcademic.hasValue(img_name)) {
           increaseAcademic(item.value);
         } else if (negAcademic.hasValue(img_name)) {
@@ -123,6 +175,9 @@ class Level {
           increaseHealth(item.value);
         } else if (negHealth.hasValue(img_name)) {
           decreaseHealth(item.value);
+        }
+        if (rare_items_catch.containsKey(img_name)) {
+          rare_items_catch.put(img_name, 1);
         }
       }
     }
@@ -228,6 +283,28 @@ class Level {
       TableRow row = table1.getRow(i);
       String item_name = row.getString(0);
       negHealth.append(item_name);
+    }
+
+    for (int i=0; i<item_names.size(); i++) {
+      String item = item_names.get(i);
+      if (posAcademic.hasValue(item) || posHealth.hasValue(item)) {
+        positives.append(item);
+      } else {
+        negatives.append(item);
+      }
+    }
+
+    if (item_names.contains("airplane5")) {
+      rare_items_count.put("airplane5", 0);
+      rare_items_catch.put("airplane5", 0);
+    }
+    if (item_names.contains("capstone")) {
+      rare_items_count.put("capstone", 0);
+      rare_items_catch.put("capstone", 0);
+    }
+    if (item_names.contains("jterm2")) {
+      rare_items_count.put("jterm2", 0);
+      rare_items_catch.put("jterm2", 0);
     }
   }
 }
