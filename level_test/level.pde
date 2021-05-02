@@ -24,18 +24,20 @@ class Level {
   int levelNum;
   int academic = 50;
   int health = 50;
-  float xOffset = width*.75;
-  int default_value = 20;
-  int random_number;
   PImage bg_freshman, bg_sophomore, bg_junior, bg_senior, bg_away1, bg_away2;
   boolean away = false;
-  color nyu = color(91, 15, 141);
+  color nyu = color(91, 15, 141); // RGB value of the NYU symbolic color, we never actually use this
 
+  /**
+   * Constructor of the Level object
+   * @param level_num: number encoding the current academic year
+   * 0 - 3 : freshman - senior
+   */
   Level(int level_num) {
     levelNum = level_num;
     loadData();
-    //items.add(new Item(30, "jterm2", 100, 100, 1));
 
+    // Loading the prepared images as backgrounds
     bg_freshman = loadImage("../data/images/freshman.png");
     bg_freshman.resize(width, 0);
     bg_sophomore = loadImage("../data/images/sophomore.png");
@@ -50,6 +52,9 @@ class Level {
     bg_away2.resize(0, height);
   }
 
+  /**
+   * Enclosing all relevant functions and checking win/lost status
+   */
   void testLevel() {
     displayBackground();
     player.display();
@@ -63,19 +68,11 @@ class Level {
     if (lost()) {
       screen = "lose";
     }
-
-    //if (!items.isEmpty()) {
-    //  for (int i=0; i<items.size(); i++) {
-    //    Item cur_item = items.get(0);
-    //    if (cur_item.outOfScreen()) {
-    //      items.remove(cur_item);
-    //    } else {
-    //      cur_item.display();
-    //    }
-    //  }
-    //}
   }
 
+  /**
+   *
+   */
   void displayBackground() {
     if (levelNum == 0) {
       image(bg_freshman, 0, 0);
@@ -117,11 +114,6 @@ class Level {
   }
 
   void addItems() {
-    //int random_number = (int)random(0, item_names.size());
-    //if (frameCount % 20 == 0) {
-    //  items.add(new Item(30, item_names.get(random_number), 100, 100, frames.get(item_names.get(random_number)), values.get(item_names.get(random_number))));
-    //}
-    //int rand_pos = (int)random(0, positives.size());
     if (frameCount % 60 == 0) {
       boolean item_added = false;
       while (!item_added) {

@@ -6,7 +6,6 @@ PFont font;
 int level_count = 0;
 int buttonState, prevButtonState, potenValue;
 String[] academic_years = {"freshman", "sophomore", "junior", "senior"};
-color nyu = color(91, 15, 141);
 
 int frame = 0;
 int frame2 = 0;
@@ -52,13 +51,9 @@ void setup() {
 void draw() {
   background(255);
 
-  //text("Button: "+str(buttonState)+"\nPoten: "+str(potenValue), width/2, height*.3);
-  //text("Distance: "+str(xPos), width/2, height*.3);
-
   if (abs(xPos-smoothedNum) < width*.3) {
     smoothedNum += (xPos-smoothedNum)*.2;
   }
-  //prevX = smoothedNum;
   level.player.position.x = min(smoothedNum, width*.75);
   if (level.player.position.x != prevX) {
     if (frameCount % 5 == 0) {
@@ -74,7 +69,6 @@ void draw() {
     level.player.directionX = "left";
   }
   prevX = smoothedNum;
-  //prevX = level.player.position.x;
 
   switch(screen) {
   case "welcome":
@@ -84,7 +78,6 @@ void draw() {
     displayInstruction();
     break;
   case "game":
-    //displayLevel();
     level.testLevel();
     break;
   case "win":
@@ -100,17 +93,10 @@ void draw() {
   }
 
   prevButtonState = buttonState;
-
-  //
-  //for (Map.Entry me : level.rare_items_count.entrySet()) {
-  //  print(me.getKey() + " count is ");
-  //  println(me.getValue());
-  //  print(me.getKey() + " catch is ");
-  //  println(level.rare_items_catch.get(me.getKey()));
-  //}
-  //
 }
-
+/**
+ * Display welcome screen with game title and two options
+ */
 void displayWelcome() {
   image(bg_welcome, 0, -100);
   fill(255, 255, 255, 20);
@@ -127,6 +113,8 @@ void displayWelcome() {
   fill(0);
   text("TO MAKE SELECTION", width/2, height-50);
   textSize(60);
+  String game_title = "LIFE ON THE HIGHLINE";
+  text(game_title, width/2, 100);
   String welcomeText = "MARHABA";
   String instructionText = "INSTRUCTION";
   String startText = "START";
@@ -148,6 +136,9 @@ void displayWelcome() {
   popStyle();
 }
 
+/**
+ * Display instruction screen with descriptions, illustrations, and one option
+ */
 void displayInstruction() {
   image(bg_welcome, 0, -100);
   fill(255, 255, 255, 20);
@@ -174,8 +165,6 @@ void displayInstruction() {
 
   textSize(50);
   fill(0);
-  String displayText = "INSTRUCTIONS";
-  //text(displayText, width/2, 100);
   if (buttonState == 1 && prevButtonState == 0) {
     screen = "welcome";
   }
@@ -195,6 +184,9 @@ void displayInstruction() {
   popStyle();
 }
 
+/**
+ * Display winning screen with one option to proceed
+ */
 void displayWin() {
   pushStyle();
   image(bg_break, 0, 0);
@@ -223,6 +215,9 @@ void displayWin() {
   popStyle();
 }
 
+/**
+ * Display losing screen with two options
+ */
 void displayLose() {
   pushStyle();
   image(bg_break, 0, 0);
@@ -248,14 +243,12 @@ void displayLose() {
   String displayText;
   float choice = (float)map(potenValue, 0, 1023, 0, 100);
   if (choice < 50) {
-    //displayText = year+" YEAR HAS BEEN ROUGH!\n>> RESET LEVEL <<\nRESET GAME";
     resetLevel = ">> RESET LEVEL <<";
     if (buttonState == 1 && prevButtonState == 0) {
       level = new Level(level_count);
       screen = "game";
     }
   } else {
-    //displayText = year+" YEAR HAS BEEN ROUGH!\nRESET LEVEL\n>> RESET GAME <<";
     resetGame = ">> RESET GAME <<";
     if (buttonState == 1) {
       level = new Level(0);
@@ -268,6 +261,9 @@ void displayLose() {
   popStyle();
 }
 
+/**
+ * Display graduating screen with one option to restart game
+ */
 void displayGraduate() {
   pushStyle();
   image(bg_graduate, 0, 0);
@@ -297,6 +293,11 @@ void displayGraduate() {
   popStyle();
 }
 
+/**
+ * Serial communication with Arduino
+ * Receiving: button, potentiometer, distance sensor
+ * Sending: LED
+ */
 void serialEvent(Serial myPort) {
   String s=myPort.readStringUntil('\n');
   s=trim(s);
